@@ -61,7 +61,7 @@ public class Main {
             if(stack.peek() != operList.get(4)){
                 outputStr += String.valueOf(stack.pop()) + ' ';
             } else {
-                System.out.println("не соответствие скобок");
+                System.out.println("несоответствие скобок");
                 outputStr += String.valueOf(stack.pop()) + ' ';
             }
             j++;
