@@ -1,13 +1,13 @@
 package com.company;
 
 import java.util.ArrayList;
+import java.util.EmptyStackException;
 import java.util.Stack;
 
 public class MyMathExp {
 
     public MyMathExp() {
     }
-
     private byte priority(char ch) {
         switch (ch) {
             case '(':
@@ -25,7 +25,7 @@ public class MyMathExp {
             case '^':
                 return 4;
             default:
-                return 6;
+                return 5;
         }
     }
 
@@ -37,9 +37,30 @@ public class MyMathExp {
         }
         return true;
     }
+    private boolean checkStack(Stack<Character> stack){
+        if(stack.empty())
+            return true;
+        return false;
+    }
 
-    public String rpn (String string){
-        String inputStr = string.replaceAll(" ", "");
+    private double count(double n1, double n2, String operation){
+        switch (operation) {
+            case "-":
+                return n2-n1;
+            case "+":
+                return n1 + n2;
+            case "*":
+                return n1*n2;
+            case "/":
+                return n2/n1;
+            case "^":
+                return Math.pow(n2, n1);
+        }
+        return 0;
+    }
+
+    private String rpn(String string) throws EmptyStackException {
+        String inputStr = string.trim();
         Stack<Character> stack = new Stack<Character>();
         ArrayList<Character> operList = new ArrayList<Character>();
         operList.add('+');
@@ -73,10 +94,11 @@ public class MyMathExp {
                             i++;
                         } else if (c == ')') {
                             outputStr += String.valueOf(stack.pop()) + ' ';
-                            if(stack.empty()){
-                                 outputStr +="Ошибка";
+                            /*if (stack.empty()) {
+                                outputStr += "Ошибка";
                                 break;
-                            }
+                            }*/
+                            if (stack.isEmpty()) throw  new EmptyStackException();
                             char buf = stack.pop();
 
                             while ((!stack.empty()) && buf != '(') {
@@ -95,17 +117,38 @@ public class MyMathExp {
                 }
             }
         }
-        while (!stack.empty() && (stack.peek() != ('('))){
+        while (!stack.empty() && (stack.peek() != ('('))) {
             outputStr += String.valueOf(stack.pop()) + ' ';
-        }
-        String erorrs = new String();
-        if (!stack.empty()){
-            outputStr +="Ошибка";
         }
         return outputStr;
     }
 
-    public void Calc(String exp){
+    public double Calc(String exp) {
+        String exp1 = rpn(exp);
+        Stack<Double> stack = new Stack<Double>();
+        double result = 0;
+        String[] chars = exp1.split(" ");
+        ArrayList<String> operList = new ArrayList<String>();
+        operList.add("+");
+        operList.add("-");
+        operList.add("*");
+        operList.add("/");
+        operList.add("^");
 
+        for (int i = 0; i <= chars.length - 1; i++) {
+            if (checkNumb(chars[i])) {
+                stack.push(Double.parseDouble(chars[i])); // try catch
+            } else if (operList.contains(chars[i])) {
+                String oper = chars[i];
+                double first = stack.pop();
+                double second = stack.pop();
+                result = count(first, second, oper);
+                stack.push(result);
+            }
+        }
+        result = stack.pop();
+        return result;
     }
+
+
 }
