@@ -6,8 +6,20 @@ import java.util.Stack;
 
 public class MyMathExp {
 
-    public MyMathExp() {
+    private String expression;
+
+    public String getExpression() {
+        return expression;
     }
+
+    public MyMathExp() {
+
+    }
+
+    public MyMathExp(String expression) {
+        this.expression = expression;
+    }
+
     private byte priority(char ch) {
         switch (ch) {
             case '(':
@@ -123,8 +135,8 @@ public class MyMathExp {
         return outputStr;
     }
 
-    public double Calc(String exp) {
-        String exp1 = rpn(exp);
+    public void calc() {
+        String exp1 = rpn(expression);
         Stack<Double> stack = new Stack<Double>();
         double result = 0;
         String[] chars = exp1.split(" ");
@@ -147,8 +159,13 @@ public class MyMathExp {
             }
         }
         result = stack.pop();
-        return result;
+        expression = Double.toString(result);
     }
 
-
+    @Override
+    public String toString() {
+        return "MyMathExp{" +
+                "expression='" + expression + '\'' +
+                '}';
+    }
 }
